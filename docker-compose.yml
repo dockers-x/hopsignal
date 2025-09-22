@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  hopsignal:
+    build: .
+    container_name: hopsignal
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "82:82"
+    volumes:
+      - hopsignal-data:/home/hopsignal/data
+      # 或者使用本地目录挂载
+      # - ./data:/home/hopsignal/data
+    environment:
+      - TZ=UTC
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - hopsignal-network
+
+networks:
+  hopsignal-network:
+    driver: bridge
+
+volumes:
+  hopsignal-data:
